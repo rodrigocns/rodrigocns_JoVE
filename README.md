@@ -2,8 +2,8 @@ This is the README of the cloned repository containing files used to build the w
 
 The link to access the original repository is https://github.com/rodrigocns/rodrigocns_JoVE
 
-The link to access the example repository is https://github.com/rodrigocnstest/rodrigocnstest.github.io
+The link to access an example cloned repository is https://github.com/rodrigocnstest/rodrigocnstest.github.io
 
-The link to access the example webpage is https://rodrigocnstest.github.io/iRT_JoVE.html
+The link to access an example webpage is https://rodrigocnstest.github.io/iRT_JoVE.html
 
-Change 'rodrigocnstest' inside the links to your created username to access your repository after creating it.
+Change 'rodrigocnstest' from inside the example links to your created username to access your repository after creating it.
