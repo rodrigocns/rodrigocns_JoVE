@@ -9,10 +9,11 @@ clear
 
 % Settings (modify as needed) ====================
 
-% name of downloaded sheets filename
+% name of downloaded sheets filename (default)
 input_filename = 'iRT gsheets.xlsx';
-% output file name.
-output_filename = 'iRT_data.xlsx';
+
+% output file name (default)
+output_filename = 'iRT data.xlsx';
 
 % Header names of the data tab (temporal data)
 header={"sessionID", "task_id", "epoch", "duration", "Qi", "Qj", "Qk", "Qr"};
@@ -27,34 +28,60 @@ zipped_rows = [8,9,10,11,12,13];
    #=========================================#
 %}
 % functions =================================================
-function uncompressed_data = extract(compressed_data)
-  splitted_data = strsplit(compressed_data, ',');
-  uncompressed_data = str2double(splitted_data)';
+function unpackaged_data = extract (packaged_data)
+  splitted_data = strsplit (packaged_data, ',');
+  unpackaged_data = str2double (splitted_data)';
 endfunction
 
-% Copy sheets data to octave =================
-tic;printf("Reading Sheets...");
-[sheets_num,sheets_txt,sheets_raw] = xlsread(input_filename,1);
+% Prompt user for filenames ==================
+in_fname = inputdlg ("Insert the name of the packaged data file previously downloaded. Ex: iRT gsheets.xlsx", "Input data file");
+if (isempty ( char (in_fname) ) == 1 )
+  printf ( cstrcat ("Blank input, using default file name: '",input_filename,"'.\n"));
+else
+  if (endsWith (char (in_fname), ".xlsx" ) == 0 )
+    warndlg ( "File name does not end with .xlsx\nAre you sure it is in the right file format? ", "Input data file");
+    endif
+  input_filename = char(in_fname);
+endif
+
+out_fname = inputdlg ("Insert the name of the output, unpackaged data file. Ex: iRT data.xlsx", "Output data file");
+if (isempty ( char (out_fname) ) == 1 )
+  printf ( cstrcat ("Blank input, using default file name: '",output_filename,"'.\n"));
+else
+  if (endsWith (char (out_fname), ".xlsx" ) == 0 )
+    warndlg ( "File name does not end with .xlsx\nAre you sure it is in the right file format? ", "Output data file");
+    endif
+  output_filename = char(out_fname);
+endif
+
+if (strcmp (input_filename, output_filename) == 1 )
+  output_filename = strcat( "unpacked ",output_filename);
+  warndlg ( cstrcat ("Input name is the same as output name. Changed output name to '",output_filename, "' to avoid overwrites.\n"));
+endif
+
+% Copy sheets data to octave =====================
+tic;printf ("Reading Sheets...");
+[sheets_num,sheets_txt,sheets_raw] = xlsread (input_filename,1);
 printf("DONE! ");
 toc;
 
 % Unpacking data ===================================
-tic;printf("Unpacking data...");
+tic;printf ("Unpacking data...");
 
 full_matrix = header;
 atemporal_cmatrix = header_atemporal;
 %for each line of packaged data (2nd till last)
 counter = 0;
-for i_line = 2:size(sheets_raw,1)
+for i_line = 2:size (sheets_raw,1)
   % take unique data from session/task (session_id, task_id, etc)
   session_id = sheets_raw{i_line,4};
   task_id = sheets_raw{i_line,5};
-  pxAngsRatio = mean(extract(sheets_raw{i_line,6}));
+  pxAngsRatio = mean (extract (sheets_raw {i_line,6} ) );
 
   % unpackage each data array in temporal_array matrix (from a single line to many lines)
   % one column at a time
   temporal_array = [];
-  for i_col = 1:size(zipped_rows,2)
+  for i_col = 1:size (zipped_rows,2)
     temporal_array = [temporal_array, extract( sheets_raw{ i_line, zipped_rows(i_col) }) ];
   endfor
 
@@ -78,9 +105,9 @@ endfor
 printf("%i lines processed. DONE! ",counter);toc;
 clear counter;
 
-% Sabing data ====================================
-tic;printf();
-printf(strcat("Saving ", num2str(size(full_matrix,1)), " rows of data (estimated time: ", num2str(size(full_matrix,1)/40), " s)..."));
+% Saving data ====================================
+tic;
+printf ( cstrcat ( "Saving ", num2str(size(full_matrix,1)), " rows of data (estimated time: ", num2str(size(full_matrix,1)/40), " s)..."));
 % write to xlsx file
 xls = xlsopen(strcat(output_filename), 1);
 xls = oct2xls(full_matrix,xls,"data");
@@ -89,4 +116,5 @@ xls = xlsclose(xls);
 
 printf(strcat(output_filename," saved. "));
 
-printf("DONE! ");toc;
+printf("DONE! \n");toc;
+helpdlg ( cstrcat ("Unpackaging of file '",input_filename, "' is complete.\nData was stored inside '", output_filename, "'.") );

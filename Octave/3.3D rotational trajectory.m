@@ -7,20 +7,44 @@ clear;
 
 % To be chosen: 'session ID' and 'name of task'
 %session_ID = 1682699553789; %volunteer1
-session_ID = 1682707472090; %volunteer2
-%task_ID = "bolaBastao_c"; % molecule with balls and sticks
+session_ID = "1682707472090"; %volunteer2
+task_ID = "bolaBastao_c"; % molecule with balls and sticks
 %task_ID = "poligonFill"; % spatial polygons
-task_ID = "mrt" % third task of the iRT
-filename = "iRT_data.xlsx";
+%task_ID = "mrt" % third task of the iRT
+filename = "iRT data.xlsx"; % default unpackaged data filename
 
 
 tic();
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% USER INPUT
+
+%session ID
+prpt_sessionID = inputdlg ("Insert session ID value. Ex: 1682699553789, 1682707472090", "Input Session ID");
+if (isempty ( char (prpt_sessionID) ) == 1 )
+  printf ( cstrcat ("Blank input, using default value: ",session_ID,"\n"));
+else
+  session_ID = char(prpt_sessionID);
+endif
+
+%task ID
+prpt_taskID = inputdlg ("Insert task ID value. Ex: bolaBastao\_c, poligonFill, mrt", "Input Task ID");
+if (isempty ( char (prpt_taskID) ) == 1 )
+  printf ( cstrcat ("Blank input, using default value: ",task_ID,"\n"));
+else
+  task_ID = char(prpt_taskID);
+endif
+
+%iRT data filename
+prpt_iRT_fname = inputdlg ("Insert iRT unpackaged data filename. Ex: iRT data.xlsx", "Input iRT unpackaged data filename");
+if (isempty ( char (prpt_iRT_fname) ) == 1 )
+  printf ( cstrcat ("Blank input, using default value: ",filename,"\n"));
+else
+  filename = char(prpt_iRT_fname);
+endif
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIRST PART: READING FILE
-
-
-
 
 % read data from .xlsx
 printf("Reading file...\n")
@@ -446,4 +470,3 @@ for i=1:N-1
 endfor
 
 printf("\nProcess completed!\n"); toc();
-
