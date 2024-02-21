@@ -752,6 +752,7 @@ endif
 printf("\n STEP 3: Data Processing\n");
 % Build interaction replay animation from temporal quaternion (t x 4 array)
 if cfg_replay_animation == true
+  cfg_replay_animation_filename = ["output jmol console ",num2str(cfg_iRT_sessionID)," ",cfg_iRT_taskID,".xlsx"];
   %declare cell matrix
   replay_int_jmol_script = cell(frame_count,1);
   %fill first row (all opaque)
